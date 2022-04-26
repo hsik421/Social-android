@@ -1,4 +1,4 @@
-package com.app.mobile.social
+package com.app.mobile.social.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -6,6 +6,8 @@ import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.app.mobile.social.BaseBindingFragment
+import com.app.mobile.social.R
 import com.app.mobile.social.databinding.FragmentSocialListBinding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

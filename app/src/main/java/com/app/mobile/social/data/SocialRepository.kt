@@ -1,4 +1,4 @@
-package com.app.mobile.social
+package com.app.mobile.social.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 interface SocialRepository {
     suspend fun sendReply(idx: Int, name: String, reply: String) : Flow<Boolean>
-    suspend fun like(idx: Int, likely: Boolean) : Flow<Int>
+    suspend fun like(idx: Int, likely: Boolean) : Flow<Boolean>
     suspend fun getItems(page: Int, size: Int): Flow<List<SocialModel.Resource>>
     suspend fun getAD(page: Int, size: Int): Flow<List<SocialModel.AD>>
 }

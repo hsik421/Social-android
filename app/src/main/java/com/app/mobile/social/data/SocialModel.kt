@@ -1,4 +1,4 @@
-package com.app.mobile.social
+package com.app.mobile.social.data
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -15,7 +15,7 @@ class SocialModel {
         val like: Int,
         val imgUrl: String,
         var replies: MutableList<Reply>
-    ) : Parcelable,Resource
+    ) : Parcelable, Resource
 
     @Parcelize
     data class Reply(

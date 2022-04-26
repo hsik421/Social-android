@@ -1,4 +1,4 @@
-package com.app.mobile.social
+package com.app.mobile.social.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.app.mobile.social.data.SocialModel
 import com.app.mobile.social.databinding.ItemAdBinding
 import com.app.mobile.social.databinding.ItemContentBinding
 import javax.inject.Inject

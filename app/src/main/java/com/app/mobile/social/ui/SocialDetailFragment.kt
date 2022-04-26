@@ -1,9 +1,12 @@
-package com.app.mobile.social
+package com.app.mobile.social.ui
 
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import com.app.mobile.social.BaseBindingFragment
+import com.app.mobile.social.R
+import com.app.mobile.social.data.SocialModel
 import com.app.mobile.social.databinding.FragmentSocialDetailBinding
 
 private const val SOCIAL_PARAM = "SOCIAL_PARAM"
