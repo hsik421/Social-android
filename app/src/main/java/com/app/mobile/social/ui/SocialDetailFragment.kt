@@ -2,8 +2,10 @@ package com.app.mobile.social.ui
 
 import android.os.Bundle
 import android.transition.TransitionInflater
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.mobile.social.BaseBindingFragment
 import com.app.mobile.social.R
 import com.app.mobile.social.data.SocialModel
@@ -18,16 +20,41 @@ class SocialDetailFragment : BaseBindingFragment<FragmentSocialDetailBinding>() 
 
     private val socialViewModel: SocialViewModel by activityViewModels()
 
+    private val replyAdapter by lazy { ReplyListAdapter() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = TransitionInflater.from(requireContext()).inflateTransition(R.transition.shared_image)
         arguments?.let {
             param = it.getParcelable(SOCIAL_PARAM)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewDataBinding.socialVm = socialViewModel
+        param?.let {
+            viewDataBinding.item = it
+            viewDataBinding.socialVm = socialViewModel
+        }
+
+        setupView()
+        subscribeUI()
+    }
+
+    private fun setupView(){
+        viewDataBinding.recycler.apply {
+            adapter = replyAdapter
+            layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
+        }
+    }
+
+    private fun subscribeUI(){
+        param?.let { social ->
+            socialViewModel.items.observe(viewLifecycleOwner){ originList->
+                val temp = originList.find { find-> find.idx == social.idx } as? SocialModel.Social
+                replyAdapter.submitList(temp?.replies?.toMutableList())
+                viewDataBinding.edit.text = null
+                viewDataBinding.invalidateAll()
+            }
+        }
     }
 
     companion object {

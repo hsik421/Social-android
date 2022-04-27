@@ -4,28 +4,30 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 class SocialModel {
+
     interface Resource {
-        val idx: Int
+        val idx: Long
     }
 
     @Parcelize
     data class Social(
-        override val idx: Int,
+        override val idx: Long,
         val title: String,
-        val like: Int,
+        var like: Int,
+        var isLike : Boolean,
         val imgUrl: String,
         var replies: MutableList<Reply>
     ) : Parcelable, Resource
 
     @Parcelize
     data class Reply(
-        val idx: Int,
+        val idx: Long,
         val name: String,
         val comment: String
     ): Parcelable
 
     data class AD(
-        override val idx: Int,
+        override val idx: Long,
         val imgUrl: String,
         val url: String
     ) : Resource
@@ -33,12 +35,13 @@ class SocialModel {
     companion object {
         fun socialListData(): List<Social> {
             val temp = mutableListOf<Social>()
-            (0 until 18).forEach {
+            (0 until 20).forEach {
                 temp.add(
                     Social(
-                        idx = it,
+                        idx = it.toLong(),
                         title = "title $it",
                         like = 0,
+                        isLike = false,
                         imgUrl = if (it % 2 == 0) "" else "img",
                         replies = mutableListOf()
                     )
@@ -49,10 +52,10 @@ class SocialModel {
 
         fun adData(): List<AD> {
             val temp = mutableListOf<AD>()
-            (19 until 27).forEach {
+            (0 until 10).forEach {
                 temp.add(
                     AD(
-                        idx = it,
+                        idx = Int.MAX_VALUE - it.toLong(),
                         imgUrl = "img",
                         url = if (it % 2 == 0) "https://www.google.com" else "https://www.naver.com"
                     )

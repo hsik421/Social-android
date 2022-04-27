@@ -1,16 +1,19 @@
 package com.app.mobile.social.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.mobile.social.BaseBindingFragment
 import com.app.mobile.social.R
 import com.app.mobile.social.databinding.FragmentSocialListBinding
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SocialListFragment : BaseBindingFragment<FragmentSocialListBinding>() {
@@ -18,7 +21,6 @@ class SocialListFragment : BaseBindingFragment<FragmentSocialListBinding>() {
         get() = R.layout.fragment_social_list
 
 
-    @Inject
     lateinit var listAdapter: SocialListAdapter
 
     val socialViewModel: SocialViewModel by activityViewModels()
@@ -30,28 +32,45 @@ class SocialListFragment : BaseBindingFragment<FragmentSocialListBinding>() {
     }
 
     private fun setupView() {
+
         viewDataBinding.socialListRecycler.apply {
+            itemAnimator = null
+            listAdapter = SocialListAdapter(socialViewModel)
             val linearLayoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            if (!listAdapter.hasObservers()) {
+                listAdapter.setHasStableIds(true)
+            }
             adapter = listAdapter
             layoutManager = linearLayoutManager
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     if (socialViewModel.dataLoading.value == false &&
-                        linearLayoutManager.findLastCompletelyVisibleItemPosition() == listAdapter.currentList.size - 1) {
+                        linearLayoutManager.findLastCompletelyVisibleItemPosition() == listAdapter.currentList.size - 1
+                    ) {
                         socialViewModel.loadSocials()
                     }
                 }
             })
         }
+
     }
 
 
     private fun subscribeUi() {
         socialViewModel.items.observe(requireActivity()) {
-            Log.i("hsik","socialViewModel.items = $it")
             listAdapter.submitList(it)
+        }
+        socialViewModel.itemEvent.observe(viewLifecycleOwner) {
+
+            requireActivity().supportFragmentManager.commit {
+                replace(R.id.content_frame,SocialDetailFragment.newInstance(it))
+                addToBackStack(null)
+            }
+        }
+        socialViewModel.browserEvent.observe(viewLifecycleOwner) {
+            requireActivity().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it?:return@observe)))
         }
     }
 

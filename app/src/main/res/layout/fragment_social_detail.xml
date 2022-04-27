@@ -4,6 +4,11 @@
         <variable
             name="socialVm"
             type="com.app.mobile.social.ui.SocialViewModel" />
+        <variable
+            name="item"
+            type="com.app.mobile.social.data.SocialModel.Social" />
+        <import type="android.text.TextUtils"/>
+        <import type="android.view.View"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -14,11 +19,11 @@
         <ImageView
             android:id="@+id/content_img"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="200dp"
             android:gravity="center"
+            android:visibility="@{TextUtils.isEmpty(item.imgUrl) ? View.GONE : View.VISIBLE}"
             android:scaleType="centerCrop"
             android:src="@mipmap/ic_launcher"
-            android:transitionName="detail_img"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -26,7 +31,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="16dp"
-            android:text="lorem ipsum ~~~"
+            android:text="@{item.title}"
+            tools:text="lorem ipsum ~~~"
             android:textSize="25sp"
             app:layout_constraintTop_toBottomOf="@id/content_img" />
 
@@ -36,7 +42,8 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:padding="10dp"
-            android:src="@android:drawable/ic_menu_manage"
+            android:onClick="@{()->socialVm.onLikeEvent(item)}"
+            android:src="@{item.isLike ? @android:drawable/ic_menu_agenda : @android:drawable/ic_menu_manage}"
             android:scaleType="fitXY"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title" />
@@ -55,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:text="xxx"
+            android:text="@{String.valueOf(item.like)}"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             app:layout_constraintBaseline_toBaselineOf="@id/like_tv"
@@ -64,6 +71,7 @@
             android:id="@+id/recycler"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:background="@android:color/holo_green_dark"
             app:layout_constraintTop_toBottomOf="@id/like_img"
             app:layout_constraintBottom_toTopOf="@id/edit"/>
         <EditText
@@ -71,6 +79,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
+            android:lines="1"
+            android:enabled="@{!socialVm.dataLoading}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/send_btn"
             app:layout_constraintBottom_toBottomOf="parent"/>
@@ -79,6 +89,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SEND"
+            android:enabled="@{!socialVm.dataLoading}"
+            android:onClick="@{()->socialVm.onSendReply(item.idx,edit.getText().toString())}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
